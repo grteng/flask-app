@@ -27,9 +27,13 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired(), Length(min=6, max=20)])
     submit = SubmitField('Login')
 
+
+
+# Routes
 @app.route('/')
 def home():
     return render_template('home.html')
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -46,7 +50,8 @@ def login():
             flash('Invalid username or password', 'error')
     return render_template('login.html', form=form)
 
-@app.route('/dashboard')
+
+@app.route('/dashboard', methods=['GET'])
 @login_required
 def dashboard():
     if current_user.is_authenticated and current_user.get_id() in User.users:
@@ -54,12 +59,14 @@ def dashboard():
         return f'Welcome to the dashboard, {current_user.get_id()}! Your role is: {role}'
     return 'Unauthorized'
 
-@app.route('/logout')
+
+@app.route('/logout', methods=['GET'])
 @login_required
 def logout():
     logout_user()
     flash('Logged out successfully', 'success')
     return redirect(url_for('home'))
+
 
 if __name__ == '__main__':
     app.run(debug=True)
